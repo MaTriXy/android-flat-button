@@ -1,4 +1,4 @@
-FButton
+FButton [![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.hoang8f/fbutton/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.hoang8f/fbutton)
 =======
 FButton is a custom Button of Android with "Flat UI" concept. FButton's design get inspiration from [designmono](http://designmodo.github.io/Flat-UI/). This library is very small and highly customizable.
 
@@ -15,7 +15,7 @@ Including in your project
 FButton Library is pushed to [Maven Central](http://search.maven.org/#search|ga|1|fbutton), so you just need to add the following dependency to your `build.gradle`.
 
     dependencies {
-        compile 'info.hoang8f:fbutton:1.0.1'
+        compile 'info.hoang8f:fbutton:1.0.5'
     }
 
 
@@ -69,27 +69,27 @@ Color Swatches
 --------------
 For your convenience Swatches Preset by [designmono](http://designmodo.github.io/Flat-UI/) are also defined in this library
 ```xml
-//Color Swatches provided by http://designmodo.github.io/Flat-UI/
-<color name="color_turquoise">#1abc9c</color>
-<color name="color_green_sea">#16a085</color>
-<color name="color_emerald">#2ecc71</color>
-<color name="color_nephritis">#27ae60</color>
-<color name="color_peter_river">#3498db</color>
-<color name="color_belize_hole">#2980b9</color>
-<color name="color_amethyst">#9b59b6</color>
-<color name="color_wisteria">#8e44ad</color>
-<color name="color_wet_asphalt">#34495e</color>
-<color name="color_midnight_blue">#2c3e50</color>
-<color name="color_sun_flower">#f1c40f</color>
-<color name="color_orange">#f39c12</color>
-<color name="color_carrot">#e67e22</color>
-<color name="color_pumpkin">#d35400</color>
-<color name="color_alizarin">#e74c3c</color>
-<color name="color_pomegranate">#c0392b</color>
-<color name="color_clouds">#ecf0f1</color>
-<color name="color_silver">#bdc3c7</color>
-<color name="color_concrete">#95a5a6</color>
-<color name="color_asbestos">#7f8c8d</color>
+ //Color Swatches provided by http://designmodo.github.io/Flat-UI/
+<color name="fbutton_color_turquoise">#1abc9c</color>
+<color name="fbutton_color_green_sea">#16a085</color>
+<color name="fbutton_color_emerald">#2ecc71</color>
+<color name="fbutton_color_nephritis">#27ae60</color>
+<color name="fbutton_color_peter_river">#3498db</color>
+<color name="fbutton_color_belize_hole">#2980b9</color>
+<color name="fbutton_color_amethyst">#9b59b6</color>
+<color name="fbutton_color_wisteria">#8e44ad</color>
+<color name="fbutton_color_wet_asphalt">#34495e</color>
+<color name="fbutton_color_midnight_blue">#2c3e50</color>
+<color name="fbutton_color_sun_flower">#f1c40f</color>
+<color name="fbutton_color_orange">#f39c12</color>
+<color name="fbutton_color_carrot">#e67e22</color>
+<color name="fbutton_color_pumpkin">#d35400</color>
+<color name="fbutton_color_alizarin">#e74c3c</color>
+<color name="fbutton_color_pomegranate">#c0392b</color>
+<color name="fbutton_color_clouds">#ecf0f1</color>
+<color name="fbutton_color_silver">#bdc3c7</color>
+<color name="fbutton_color_concrete">#95a5a6</color>
+<color name="fbutton_color_asbestos">#7f8c8d</color>
 ```
 
 Developed By

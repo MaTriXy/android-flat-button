@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -35,6 +34,9 @@ public class FButton extends Button implements View.OnTouchListener {
     private int mPaddingRight;
     private int mPaddingTop;
     private int mPaddingBottom;
+    //Background drawable
+    private Drawable pressedDrawable;
+    private Drawable unpressedDrawable;
 
     boolean isShadowColorDefined = false;
 
@@ -69,18 +71,22 @@ public class FButton extends Button implements View.OnTouchListener {
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                updateBackground(pressedDrawable);
                 this.setPadding(mPaddingLeft, mPaddingTop + mShadowHeight, mPaddingRight, mPaddingBottom);
                 break;
             case MotionEvent.ACTION_MOVE:
                 Rect r = new Rect();
                 view.getLocalVisibleRect(r);
-                if (!r.contains((int) motionEvent.getX(), (int) motionEvent.getY())) {
+                if (!r.contains((int) motionEvent.getX(), (int) motionEvent.getY() + 3 * mShadowHeight) &&
+                        !r.contains((int) motionEvent.getX(), (int) motionEvent.getY() - 3 * mShadowHeight)) {
+                    updateBackground(unpressedDrawable);
                     this.setPadding(mPaddingLeft, mPaddingTop + mShadowHeight, mPaddingRight, mPaddingBottom + mShadowHeight);
                 }
                 break;
             case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
+                updateBackground(unpressedDrawable);
                 this.setPadding(mPaddingLeft, mPaddingTop + mShadowHeight, mPaddingRight, mPaddingBottom + mShadowHeight);
                 break;
         }
@@ -137,43 +143,53 @@ public class FButton extends Button implements View.OnTouchListener {
         };
         TypedArray ta1 = context.obtainStyledAttributes(attrs, attrsArray2);
         if (ta1 == null) return;
-        mPaddingTop = ta.getDimensionPixelSize(0, 0);
-        mPaddingBottom = ta.getDimensionPixelSize(1, 0);
+        mPaddingTop = ta1.getDimensionPixelSize(0, 0);
+        mPaddingBottom = ta1.getDimensionPixelSize(1, 0);
         ta1.recycle();
     }
 
     public void refresh() {
+        int alpha = Color.alpha(mButtonColor);
         float[] hsv = new float[3];
         Color.colorToHSV(mButtonColor, hsv);
         hsv[2] *= 0.8f; // value component
         //if shadow color was not defined, generate shadow color = 80% brightness
         if (!isShadowColorDefined) {
-            mShadowColor = Color.HSVToColor(hsv);
+            mShadowColor = Color.HSVToColor(alpha, hsv);
         }
-
-        StateListDrawable stateListDrawable = new StateListDrawable();
-        if (isShadowEnabled) {
-            //Shadow is enabled
-            stateListDrawable.addState(new int[]{-android.R.attr.state_pressed}, createDrawable(mCornerRadius, mButtonColor, mShadowColor));
-            stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, createDrawable(mCornerRadius, Color.TRANSPARENT, mButtonColor));
+        //Create pressed background and unpressed background drawables
+		
+        if (this.isEnabled()) {
+            if (isShadowEnabled) {
+                pressedDrawable = createDrawable(mCornerRadius, Color.TRANSPARENT, mButtonColor);
+                unpressedDrawable = createDrawable(mCornerRadius, mButtonColor, mShadowColor);
+            } else {
+                mShadowHeight = 0;
+                pressedDrawable = createDrawable(mCornerRadius, mShadowColor, Color.TRANSPARENT);
+                unpressedDrawable = createDrawable(mCornerRadius, mButtonColor, Color.TRANSPARENT);
+            }
         } else {
-            //Shadow is disabled
-            mShadowHeight = 0;
-            stateListDrawable.addState(new int[]{-android.R.attr.state_pressed}, createDrawable(mCornerRadius, mButtonColor, Color.TRANSPARENT));
-            stateListDrawable.addState(new int[]{android.R.attr.state_pressed}, createDrawable(mCornerRadius, mShadowColor, Color.TRANSPARENT));
+            Color.colorToHSV(mButtonColor, hsv);
+            hsv[1] *= 0.25f; // saturation component
+            int disabledColor = mShadowColor = Color.HSVToColor(alpha, hsv);
+			// Disabled button does not have shadow
+            pressedDrawable = createDrawable(mCornerRadius, disabledColor, Color.TRANSPARENT);
+            unpressedDrawable = createDrawable(mCornerRadius, disabledColor, Color.TRANSPARENT);
         }
-
-        //Set button background
-        if (Build.VERSION.SDK_INT >= 16) {
-            this.setBackground(stateListDrawable);
-        } else {
-            this.setBackgroundDrawable(stateListDrawable);
-        }
-
+        updateBackground(unpressedDrawable);
         //Set padding
         this.setPadding(mPaddingLeft, mPaddingTop + mShadowHeight, mPaddingRight, mPaddingBottom + mShadowHeight);
     }
 
+    private void updateBackground(Drawable background) {
+        if (background == null) return;
+        //Set button background
+        if (Build.VERSION.SDK_INT >= 16) {
+            this.setBackground(background);
+        } else {
+            this.setBackgroundDrawable(background);
+        }
+    }
     private LayerDrawable createDrawable(int radius, int topColor, int bottomColor) {
 
         float[] outerRadius = new float[]{radius, radius, radius, radius, radius, radius, radius, radius};
@@ -236,6 +252,12 @@ public class FButton extends Button implements View.OnTouchListener {
         mPaddingRight = right;
         mPaddingTop = top;
         mPaddingBottom = bottom;
+        refresh();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
         refresh();
     }
 
